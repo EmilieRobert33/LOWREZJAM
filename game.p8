@@ -1,1 +1,2 @@
 --saluts les n00b
+--ce sera un game de la mrt
