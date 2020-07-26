@@ -9,6 +9,6 @@ function _update60 ()
 
 end
 
-function _update60 ()
+function _draw ()
 
 end
