@@ -51,9 +51,9 @@ function draw_map()
 	-- sur la map
 	mapx=flr(p.x/8)*8
 	mapy=flr(p.y/8)*8
-	camera(mapx*4,mapy*4)
+	camera(mapx*8,mapy*8)
 	
-	map(0,0,0,0,127,63)
+	map(0,0,0,0,63,31)
 end
 
 function is_tile(tile_type,x,y)
@@ -109,10 +109,10 @@ function move_player()
 	newx=p.x
 	newy=p.y
 	
-	if(btn(⬅️)) newx-=1
-	if(btn(➡️)) newx+=1
-	if(btn(⬆️)) newy-=1
-	if(btn(⬇️)) newy+=1
+	if(btnp(⬅️)) newx-=1
+	if(btnp(➡️)) newx+=1
+	if(btnp(⬆️)) newy-=1
+	if(btnp(⬇️)) newy+=1
 	
 	interact(newx,newy)
 	
