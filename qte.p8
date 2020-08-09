@@ -14,16 +14,25 @@ function _init()
 
 	carreau={}
 	carreau2={}
+	
+	rempli={▥,░,⧗,▤,☉,◆,…,★,✽,●,♥,웃,⌂,∧,🐱,ˇ,▒,♪}
+	
+	touche={"h","b","d","g"}
+	life=51
+	degat=life/10
+
 end
 
 function _update60()
 	
-	pattern(test_pat)
+--	pattern(test_pat)
+	rand_pat()
 	faire_carreau()
 	update_carreau()
 	if (btnp(2)) then
 		if (notes[1]!=nill and notes[1].x>=27 and notes[1].x<=40 and notes[1].s=="⬆️") then
 			del(notes,notes[1])
+			u_degat()
 			sfx(30+combo)
 			combo+=1
 			if (combo>9) combo=0
@@ -36,6 +45,7 @@ function _update60()
 	if (btnp(3)) then
 		if (notes[1]!=nill and notes[1].x>=27 and notes[1].x<=40 and notes[1].s=="⬇️") then
 			del(notes,notes[1])
+			u_degat()
 			sfx(30+combo)
 			combo+=1
 			if (combo>9) combo=0
@@ -50,6 +60,7 @@ function _update60()
 	if (btnp(0)) then
 		if (notes[1]!=nill and notes[1].x>=27 and notes[1].x<=40 and notes[1].s=="⬅️") then
 			del(notes,notes[1])
+			u_degat()
 			sfx(30+combo)
 			combo+=1
 			if (combo>9) combo=0
@@ -65,6 +76,7 @@ function _update60()
 		if (notes[1]!=nill and notes[1].x>=27 and notes[1].x<=40 and notes[1].s=="➡️") then
 			del(notes,notes[1])
 			sfx(30+combo)
+			u_degat()
 			combo+=1
 			if (combo>9) combo=0
 		else
@@ -80,7 +92,7 @@ function _update60()
 
 	for i=1,#notes do
 		if (notes[i]!=nill) then
-			notes[i].x-=1
+			notes[i].x-=0.80
 			if (notes[i].x<20) then
 				add(fini,notes[i])
 				del(notes,notes[i])
@@ -99,12 +111,15 @@ function _update60()
 end
 
 function _draw()
-	cls()
+	cls(1)
 	screen_shake()
 	draw_carreau()
-	print (#test_pat)
-	spr(0,15,4,4,4)
---	line(32,50,32,64,11)
+	palt(0,false)
+	rect(0,52,63,62,1)
+	rectfill(1,53,62,61,0)
+	palt()
+	draw_life()
+	spr(0,15,8,4,4)
 	line(27,50,27,64,11)
 	line(40,50,40,64,11)
 	for i=1,#notes do
@@ -125,6 +140,29 @@ function _draw()
 
 
 end
+
+function u_degat()
+	life-=degat
+	if (life<=0) life=0
+end
+function draw_life()
+
+	print ("hp:",11)
+	rectfill(11,1,62,3,8)
+	if (life>0) rectfill(11,1,11+life,3,11)
+
+end
+
+function rand_pat()
+	frame+=1
+	if (frame>=temps) then
+		frame=0
+		temps=55
+		faire_note(touche[flr(rnd(5))])
+	end
+end
+
+
 
 function pattern(s)
 	frame+=1
@@ -165,12 +203,12 @@ function faire_note(a)
 end
 
 function faire_carreau()
-	if (cos(t())==0 or cos(t())==1 or cos(t())==-1) then
-		local c={x1=rnd(64),y1=-rnd(20),x2=rnd(64),y2=0}
+	if (cos(t())==-1) then
+		local c={x1=rnd(84)-20,y1=-rnd(20),x2=rnd(64)+10,y2=0,r=rempli[flr(rnd(#rempli))]}
 		add(carreau,c)
 	end
-	if (cos(t())==0 or cos(t())==1 or cos(t())==-1) then
-		local c={x1=64,y1=rnd(64),x2=64+rnd(20),y2=rnd(64)}
+	if (cos(t())==0) then
+		local c={x1=64,y1=rnd(84)-20,x2=64+rnd(20),y2=rnd(84)-20,r=rempli[flr(rnd(#rempli))]}
 		add(carreau2,c)
 	end
 end
@@ -180,8 +218,8 @@ function update_carreau()
 	for i=1,#carreau do
 		if carreau[i]!=nill then
 			local c=carreau[i]
-			c.y1+=1
-			c.y2+=1
+			c.y1+=0.5
+			c.y2+=0.5
 
 			if (c.y1>65) del(carreau,c)
 		end
@@ -190,8 +228,8 @@ function update_carreau()
 	for a=1,#carreau2 do
 		if carreau2[a]!=nill then
 			local c=carreau2[a]
-			c.x1-=1
-			c.x2-=1
+			c.x1-=0.5
+			c.x2-=0.5
 
 			if (c.x2<-5) del(carreau2,c)
 		end
@@ -204,13 +242,17 @@ function draw_carreau()
 	for i=1,#carreau do
 		if carreau[i]!=nill then
 			local c=carreau[i]
+			fillp(c.r)
 			rectfill(c.x1,c.y1,c.x2,c.y2,5)
+			fillp()
 		end
 	end
 	for a=1,#carreau2 do
 		if carreau2[a]!=nill then
 			local c=carreau2[a]
+			fillp(c.r)
 			rectfill(c.x1,c.y1,c.x2,c.y2,5)
+			fillp()
 		end
 	end
 end
