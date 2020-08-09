@@ -4,18 +4,23 @@ __lua__
 --test por la partie qte
 function _init()
 	poke(0x5f2c,3)
+	offset=0
 	notes={}
 	fini={}
 	frame=0
 	combo=0
 	temps=60
-	test_pat={"h",60,"h",30,"b",30,"b",40,"g",60,"d",20,"g",20,"d",60}
+	test_pat={"h",60,"h",30,"b",30,"b",40,"g",60,"d",40,"g",40,"d",60,"h",40,"b",40,"g",40,"d",40}
+
+	carreau={}
+	carreau2={}
 end
 
 function _update60()
 	
 	pattern(test_pat)
---	faire_note()
+	faire_carreau()
+	update_carreau()
 	if (btnp(2)) then
 		if (notes[1]!=nill and notes[1].x>=27 and notes[1].x<=40 and notes[1].s=="⬆️") then
 			del(notes,notes[1])
@@ -25,6 +30,7 @@ function _update60()
 		else
 			sfx(40)
 			combo=0
+			offset=0.08
 		end
 	end
 	if (btnp(3)) then
@@ -36,6 +42,8 @@ function _update60()
 		else
 			sfx(40)
 			combo=0
+			offset=0.08
+
 		end
 	end
 	
@@ -48,6 +56,8 @@ function _update60()
 		else
 			sfx(40)
 			combo=0
+			offset=0.08
+
 		end
 	end
 
@@ -60,6 +70,8 @@ function _update60()
 		else
 			sfx(40)
 			combo=0
+			offset=0.08
+
 		end
 	end
 
@@ -72,7 +84,8 @@ function _update60()
 			if (notes[i].x<20) then
 				add(fini,notes[i])
 				del(notes,notes[i])
-				--sfx(31)
+				sfx(40)
+				offset=0.08
 			end
 		end
 	end
@@ -87,6 +100,8 @@ end
 
 function _draw()
 	cls()
+	screen_shake()
+	draw_carreau()
 	print (#test_pat)
 	spr(0,15,4,4,4)
 --	line(32,50,32,64,11)
@@ -149,6 +164,70 @@ function faire_note(a)
 
 end
 
+function faire_carreau()
+	if (cos(t())==0 or cos(t())==1 or cos(t())==-1) then
+		local c={x1=rnd(64),y1=-rnd(20),x2=rnd(64),y2=0}
+		add(carreau,c)
+	end
+	if (cos(t())==0 or cos(t())==1 or cos(t())==-1) then
+		local c={x1=64,y1=rnd(64),x2=64+rnd(20),y2=rnd(64)}
+		add(carreau2,c)
+	end
+end
+
+function update_carreau()
+
+	for i=1,#carreau do
+		if carreau[i]!=nill then
+			local c=carreau[i]
+			c.y1+=1
+			c.y2+=1
+
+			if (c.y1>65) del(carreau,c)
+		end
+	end
+
+	for a=1,#carreau2 do
+		if carreau2[a]!=nill then
+			local c=carreau2[a]
+			c.x1-=1
+			c.x2-=1
+
+			if (c.x2<-5) del(carreau2,c)
+		end
+	end
+
+
+end
+
+function draw_carreau()
+	for i=1,#carreau do
+		if carreau[i]!=nill then
+			local c=carreau[i]
+			rectfill(c.x1,c.y1,c.x2,c.y2,5)
+		end
+	end
+	for a=1,#carreau2 do
+		if carreau2[a]!=nill then
+			local c=carreau2[a]
+			rectfill(c.x1,c.y1,c.x2,c.y2,5)
+		end
+	end
+end
+
+function screen_shake()
+  local fade = 0.95
+  local offset_x=16-rnd(32)
+  local offset_y=16-rnd(32)
+  offset_x*=offset
+  offset_y*=offset
+  
+  camera(offset_x,offset_y)
+  offset*=fade
+  if offset<0.05 then
+    offset=0
+  end
+end
 ----------------------------
 -- init 
 ----------------------------
