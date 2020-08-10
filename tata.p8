@@ -116,7 +116,7 @@ function make_player()
 	p={}
 	p.x=3
 	p.y=2
-	p.sprite=1
+	p.sprite=251
 	p.keys=0
 	p.itemsportail=0
 end
@@ -181,8 +181,8 @@ end
 -- animations
 
 function toggle_tiles()
-	for x=mapx, mapx+8 do
-		for y=mapy, mapy+8 do
+	for x=mapx, mapx+15 do
+		for y=mapy, mapy+15 do
 			if(is_tile(anim1,x,y))then
 				swap_tile(x,y)
 				sfx(2)
