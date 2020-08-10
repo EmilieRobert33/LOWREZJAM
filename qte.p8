@@ -21,6 +21,8 @@ function _init()
 	life=51
 	degat=life/10
 
+	init_ma_vie()
+
 end
 
 function _update60()
@@ -38,6 +40,7 @@ function _update60()
 			if (combo>9) combo=0
 		else
 			sfx(40)
+			perdre_ma_vie()
 			combo=0
 			offset=0.08
 		end
@@ -51,6 +54,7 @@ function _update60()
 			if (combo>9) combo=0
 		else
 			sfx(40)
+			perdre_ma_vie()
 			combo=0
 			offset=0.08
 
@@ -66,6 +70,7 @@ function _update60()
 			if (combo>9) combo=0
 		else
 			sfx(40)
+			perdre_ma_vie()
 			combo=0
 			offset=0.08
 
@@ -81,6 +86,7 @@ function _update60()
 			if (combo>9) combo=0
 		else
 			sfx(40)
+			perdre_ma_vie()
 			combo=0
 			offset=0.08
 
@@ -97,6 +103,7 @@ function _update60()
 				add(fini,notes[i])
 				del(notes,notes[i])
 				sfx(40)
+				perdre_ma_vie()
 				offset=0.08
 			end
 		end
@@ -120,8 +127,9 @@ function _draw()
 	palt()
 	draw_life()
 	spr(0,15,8,4,4)
-	line(27,50,27,64,11)
-	line(40,50,40,64,11)
+	draw_ma_vie()
+	line(27,53,27,61,11)
+	line(40,53,40,61,11)
 	for i=1,#notes do
 		local n=notes[i]
 		print(n.s,n.x,n.y)
@@ -147,12 +155,60 @@ function u_degat()
 end
 function draw_life()
 
-	print ("hp:",11)
+	print ("hp:",0,0,11)
 	rectfill(11,1,62,3,8)
 	if (life>0) rectfill(11,1,11+life,3,11)
 
 end
+--------------------------------------
+-- function pour afficher les coeurs
+--------------------------------------
 
+function init_ma_vie()
+
+	ma_vie=4
+	retry=false
+
+end
+
+
+
+function perdre_ma_vie()
+
+	ma_vie-=1
+	if ma_vie<=0 then
+		ma_vie=4
+		life=51
+		notes={}
+		temps=120
+		retry=true
+	end
+
+end
+
+
+
+
+function draw_ma_vie()
+	if (ma_vie==1) print("♥",0,48,8)
+	if (ma_vie==2) print("♥♥",0,48,8)
+	if (ma_vie==3) print("♥♥♥",0,48,8)
+	if (retry and temps>=60) then
+		rectfill(1,25,64,33,7)
+		print("try again !",13,27,8)
+	end
+	if (ma_vie==4) then
+		print("♥♥♥♥",0,48,8)
+	end
+end
+
+
+
+
+
+------------------------------------
+------------------------------------
+------------------------------------
 function rand_pat()
 	frame+=1
 	if (frame>=temps) then
