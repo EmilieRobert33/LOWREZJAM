@@ -22,9 +22,9 @@ end
 function _draw()
 	
 	if (etat=="menu")	draw_menu()
-	draw_explo_maison()
 	draw_combat()
-	if(etat=="dialogue_debut_soso1") cls()
+	draw_explo_maison()
+	
 
 end
 ---------------------------------------
@@ -138,6 +138,64 @@ function draw_combat()
 		print("good luck son!",0,59,7)
 
 
+	elseif etat=="dialogue_debut_sosoa" then
+
+		cls()
+		rect(0,0,17,18,7)
+		spr(so_parle,1,2,2,2)
+		print("u shall ",25,0,7)
+		print("not pass !",25,10,7)
+		print("unless you ",0,20,7)
+		print("killed",0,30,7)
+		print("mustard and",0,40,7)
+		print("ketchup !!!",0,50,7)
+
+	elseif etat=="dialogue_fin_soso" then
+
+		cls()
+		rect(0,0,17,18,7)
+		spr(so_parle,1,2,2,2)
+		print("i failed ",25,0,7)
+		print("to protect",25,10,7)
+		print("my king. ",0,20,7)
+		print("shame on me !!",0,30,8)
+		--print("mustard and",0,40,7)
+		--print("ketchup !!!",0,50,7)
+
+
+
+
+	elseif etat=="combat_saucisse" then
+		cls()
+		screen_shake()
+		--draw_vague()
+		--draw_carreau()
+		palt(0,false)
+		rect(0,52,63,62,1)
+		rectfill(1,53,62,61,0)
+		palt()
+		draw_life()
+		draw_soso()
+		draw_cube()
+		draw_ma_vie()
+		line(27,53,27,61,11)
+		line(40,53,40,61,11)
+		for i=1,#notes do
+			local n=notes[i]
+			print(n.s,n.x,n.y)
+--			pset(n.x+3,n.y+3,9)
+	
+		end
+
+		for a=1,#fini do
+			local n=fini[i]
+			if n!=nill then
+				print(n.s,n.x,n.y)
+--				pset(n.x+3,n.y+3,9)
+			end
+
+		end
+
 	end
 
 
@@ -165,7 +223,6 @@ function init_fin()
 end
 
 function init_combat()
-	--poke(0x5f2c,3)
 	offset=0
 	notes={}
 	fini={}
@@ -180,12 +237,15 @@ function init_combat()
 	rempli={▥,░,⧗,▤,☉,◆,…,★,✽,●,♥,웃,⌂,∧,🐱,ˇ,▒,♪}
 	
 	touche={"h","b","d","g"}
+	touche_so={"h","b","d","g","x"}
+
 	life=51
 	degat=life/10
 
 	init_ma_vie()
 	s_parle=8
-	--etat="dialogue_debut_sensei"
+	so_parle=108
+	--etat="dialogue_debut_soso1"
 
 end
 
@@ -322,9 +382,135 @@ function update_combat()
 		if (btnp(0) or btnp(1) or btnp(2) or btnp(3) or btnp(4) or btnp(5)) then
 			etat="explo_maison"
 			nbr_pas=50
+			life=51
+			ma_vie=4
 			p.itemsportail=1
 		end
 
+	elseif etat=="dialogue_debut_sosoa" then
+		if (cos(2*t())>0 and so_parle==108) so_parle=110		
+		if (cos(2*t())<0 and so_parle==110) so_parle=108
+		if (btnp(4)) etat="combat_saucisse"
+
+	elseif etat=="dialogue_debut_sosob" then
+		if (cos(2*t())>0 and so_parle==108) so_parle=110		
+		if (cos(2*t())<0 and so_parle==110) so_parle=108
+		if (btnp(0) or btnp(1) or btnp(2) or btnp(3) or btnp(4) or btnp(5)) etat="combat_saucisse"
+
+
+	elseif etat=="dialogue_fin_soso" then
+		if (cos(2*t())>0 and so_parle==108) so_parle=110		
+		if (cos(2*t())<0 and so_parle==110) so_parle=108
+		if (btnp(0) or btnp(1) or btnp(2) or btnp(3) or btnp(4) or btnp(5)) then
+			etat="explo_hot_dog_city"
+			life=51
+			ma_vie=4
+		end
+
+
+	elseif etat=="combat_saucisse" then 
+		rand_pat()
+		faire_carreau()
+		update_carreau()
+		if (btnp(2)) then
+			if (notes[1]!=nill and notes[1].x>=27 and notes[1].x<=40 and notes[1].s=="⬆️") then
+				del(notes,notes[1])
+				u_degat()
+				sfx(30+combo)
+				combo+=1
+				if (combo>9) combo=0
+			else
+				sfx(40)
+				perdre_ma_vie()
+				combo=0
+				offset=0.08
+			end
+		end
+		if (btnp(3)) then
+			if (notes[1]!=nill and notes[1].x>=27 and notes[1].x<=40 and notes[1].s=="⬇️") then
+				del(notes,notes[1])
+				u_degat()
+				sfx(30+combo)
+				combo+=1
+				if (combo>9) combo=0
+			else
+				sfx(40)
+				perdre_ma_vie()
+				combo=0
+				offset=0.08
+
+			end	
+		end
+	
+		if (btnp(0)) then
+			if (notes[1]!=nill and notes[1].x>=27 and notes[1].x<=40 and notes[1].s=="⬅️") then
+				del(notes,notes[1])
+				u_degat()
+				sfx(30+combo)
+				combo+=1
+				if (combo>9) combo=0
+			else
+				sfx(40)
+				perdre_ma_vie()
+				combo=0
+				offset=0.08
+
+			end	
+		end
+
+		if (btnp(1)) then
+			if (notes[1]!=nill and notes[1].x>=27 and notes[1].x<=40 and notes[1].s=="➡️") then
+				del(notes,notes[1])
+				sfx(30+combo)
+				u_degat()
+				combo+=1
+				if (combo>9) combo=0
+			else
+				sfx(40)
+				perdre_ma_vie()
+				combo=0
+				offset=0.08
+
+			end
+		end
+
+		if (btnp(5)) then
+			if (notes[1]!=nill and notes[1].x>=27 and notes[1].x<=40 and notes[1].s=="❎") then
+				del(notes,notes[1])
+				sfx(30+combo)
+				u_degat()
+				combo+=1
+				if (combo>9) combo=0
+			else
+				sfx(40)
+				perdre_ma_vie()
+				combo=0
+				offset=0.08
+
+			end
+		end
+
+
+
+
+
+		for i=1,#notes do
+			if (notes[i]!=nill) then
+				notes[i].x-=0.80
+				if (notes[i].x<20) then
+					add(fini,notes[i])
+					del(notes,notes[i])
+					sfx(40)
+					perdre_ma_vie()
+					offset=0.08
+				end
+			end
+		end
+		for a=1,#fini do
+			if (fini[i]!=nill) and (fini[i].x<-7) then
+				del(fini,notes[i])
+			end
+		end
 	end
 
 end
@@ -336,9 +522,12 @@ end
 function u_degat()
 	life-=degat
 	if (life<=0) then
-		sfx(29)
 		life=0
-		etat="dialogue_fin_sensei"
+		if etat=="sensei_combat" then
+			etat="dialogue_fin_sensei"
+		elseif etat=="combat_saucisse" then
+			etat="dialogue_fin_soso"
+		end
 	end
 end
 function draw_life()
@@ -359,6 +548,37 @@ function draw_sensei_combat()
 		spr(4,10,8,4,4)
 	end
 end
+
+function draw_soso()
+
+	if life>25 then
+		spr(104,26,12,2,3)
+	else
+		spr(106,27,12,2,3)
+	end
+end
+
+function draw_cube()
+	b={}
+	for i=0,3 do
+		x=15+cos(t()/4+i/4)*10
+		y=20+sin(t()/4+i/4)*10
+		add(b,{x=x,y=y})
+	end
+	for i=1,4 do
+		j=i%4+1
+		line(b[i].x,b[i].y,b[i].x,b[i].y+10,7)
+		line(b[i].x,b[i].y,b[j].x,b[j].y)
+		line(b[i].x,b[i].y+10,b[j].x,b[j].y+10)
+
+		line(b[i].x+37,b[i].y,b[i].x+37,b[i].y+10)
+		line(b[i].x+37,b[i].y,b[j].x+37,b[j].y)
+		line(b[i].x+37,b[i].y+10,b[j].x+37,b[j].y+10)
+	
+	end
+
+end
+
 --------------------------------------
 -- function pour afficher les coeurs
 --------------------------------------
@@ -414,10 +634,13 @@ function rand_pat()
 	if (frame>=temps) then
 		frame=0
 		temps=55
-		faire_note(touche[flr(rnd(5))])
+		if etat=="sensei_combat" then
+			faire_note(touche[flr(rnd(5))])
+		else
+			faire_note(touche_so[flr(rnd(6))])
+		end
 	end
 end
-
 
 
 function pattern(s)
@@ -429,8 +652,6 @@ function pattern(s)
 		faire_note(del(s,s[1]))
 	end
 end
-
-
 
 function faire_note(a)
 
@@ -451,10 +672,10 @@ function faire_note(a)
 		local n={x=64,y=55,s="⬅️"}
 		add(notes,n)
 	end
-
-
-
-
+	if (a=="x") then
+		local n={x=64,y=55,s="❎"}
+		add(notes,n)
+	end
 
 end
 
@@ -708,7 +929,8 @@ function interact(x,y)
 		--p.x=21*8
 		--p.y=24*8
 	elseif(is_tile(tel,x,y) and p.flag==0) then
-		etat="dialogue_debut_soso1"
+		etat="dialogue_debut_sosoa"
+		p.flag=2
 	end
 end
 
