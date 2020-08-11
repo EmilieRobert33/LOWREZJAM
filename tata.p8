@@ -18,13 +18,13 @@ function _update()
 		--update_map()
 		move_player()
 		if (nbr_pas == 3) then
-			etat="dialogue_debut_sensei"
+			etat="explo_maison"
 		end
 		anim_player()
 	elseif etat=="explo_hot_dog_city" then
 		--update_map()
-		move_player()
-		anim_player()	
+		move_player() 
+		anim_player()		
 	end
 end
 
@@ -148,13 +148,18 @@ function make_player(x,y)
 	p.keys=0
 	p.itemsportail=0
 	p.anim="walk"
-	p.walk={f=66,st=66,sz=2,spd=1/30}
+	p.walk={f=66,st=66,sz=2,spd=1/60}
 end
 
 function draw_player()
-	spr(p.sprite,p.x*8,p.y*8,2,2)
-	--print(p.x,p.x*8,p.y*8,8)
+	spr(p.sprite,p.x*8,p.y*8,2,2)	
+	--print(p.x,p.x*8,p.y*8,8)	
 end
+
+--function update_player_explo()
+--	print("udpd",p.x,p.y,8)
+--	if(move_player()) anim_player()	
+--end
 
 function draw_sensei()
 	anim_sensei(96)
@@ -271,6 +276,7 @@ function anim_sensei(sprite)
 	end
 	return sprite
 end
+
 __gfx__
 00000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000004400000000000000000000044000000000000000000000044000000000000000000000000000000
