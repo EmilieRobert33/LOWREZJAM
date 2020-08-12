@@ -18,7 +18,8 @@ function _update60()
 	update_explo_maison()
 	update_combat()
 	update_boss()
-	
+	update_m()
+	update_k()
 
 end
 
@@ -28,6 +29,8 @@ function _draw()
 	draw_combat()
 	draw_explo_maison()
 	draw_combat_boss()
+	draw_combat_m()
+	draw_combat_k()
 
 end
 ---------------------------------------
@@ -132,9 +135,9 @@ function draw_combat()
 		print("you are",25,0,7)
 		print("ready now.",25,10,7)
 		print("take the portal",0,20,7)
-		print("to hot-dog-city",0,30,7)
+		print("to hot-dog-verse",0,30,7)
 		print("to kill the",0,40,7)
-		print("hot-dog master",0,50,8)
+		print("hot-doggy-dog",0,50,8)
 		print("at north.",0,59,7)
 	elseif etat=="dialogue_debut_sensei" then
 		cls()
@@ -173,8 +176,8 @@ function draw_combat()
 		print("to protect",25,10,7)
 		print("my king. ",0,20,7)
 		print("shame on me !!",0,30,8)
-		--print("mustard and",0,40,7)
-		--print("ketchup !!!",0,50,7)
+		print("mustard",0,40,8)
+		print("will b-eat you!",0,50,7)
 
 
 
@@ -389,7 +392,10 @@ function update_combat()
 	elseif etat=="dialogue_debut_sensei" then
 		if (cos(2*t())>0 and s_parle==8) s_parle=11		
 		if (cos(2*t())<0 and s_parle==11) s_parle=8
-		if (btnp(5) ) etat="sensei_combat"
+		if (btnp(5) ) then 
+			etat="sensei_combat"
+			music(02)
+		end
 
 	elseif etat=="dialogue_fin_sensei" then
 		if (cos(2*t())>0 and s_parle==8) s_parle=11		
@@ -539,13 +545,23 @@ end
 function u_degat()
 	life-=degat
 	if (life<=0) then
-		life=0
+		life=51
+		ma_vie=4
 		if etat=="sensei_combat" then
 			etat="dialogue_fin_sensei"
+			music(01)
 		elseif etat=="combat_saucisse" then
 			etat="dialogue_fin_soso"
+			music(01)
+		elseif etat=="combat_m" then
+			etat="explo_hot_dog_city"
+			music(01)
+		elseif etat=="combat_k" then
+			etat="explo_hot_dog_city"
+			music(01)
 		elseif etat=="combat_boss" then
 			etat="explo_hot_dog_city"
+			music(01)
 		end
 	end
 end
@@ -842,6 +858,360 @@ function update_boss()
 		end
 	end
 end
+---------------------------------------------
+---------------------------------------------
+---combat moutarde
+----------------------------------------------
+----------------------------------------------
+----------------------------------------------
+
+function draw_combat_m()
+
+
+	if etat=="combat_m" then
+		cls()
+		screen_shake()
+		palt(0,false)
+		rect(0,52,63,62,1)
+		rectfill(1,53,62,61,0)
+		palt()
+		draw_life()
+		draw_m()
+		draw_ma_vie()
+		line(27,53,27,61,11)
+		line(40,53,40,61,11)
+		for i=1,#notes do
+			local n=notes[i]
+			print(n.s,n.x,n.y)
+--			pset(n.x+3,n.y+3,9)
+	
+		end
+
+		for a=1,#fini do
+			local n=fini[i]
+			if n!=nill then
+				print(n.s,n.x,n.y)
+--				pset(n.x+3,n.y+3,9)
+			end
+
+		end
+
+	end
+end
+
+function draw_m()
+
+	if life>25 then
+		spr(157,26,12,2,3)
+	else
+		spr(155,27,12,2,3)
+	end
+end
+
+function update_m()
+
+
+	if etat=="combat_m" then 
+		rand_pat()
+		faire_c_b()
+		if (btnp(2)) then
+			if (notes[1]!=nill and notes[1].x>=27 and notes[1].x<=40 and notes[1].s=="⬆️") then
+				del(notes,notes[1])
+				u_degat()
+				sfx(30+combo)
+				combo+=1
+				if (combo>9) combo=0
+			else
+				sfx(40)
+				perdre_ma_vie()
+				combo=0
+				offset=0.08
+			end
+		end
+		if (btnp(3)) then
+			if (notes[1]!=nill and notes[1].x>=27 and notes[1].x<=40 and notes[1].s=="⬇️") then
+				del(notes,notes[1])
+				u_degat()
+				sfx(30+combo)
+				combo+=1
+				if (combo>9) combo=0
+			else
+				sfx(40)
+				perdre_ma_vie()
+				combo=0
+				offset=0.08
+
+			end	
+		end
+	
+		if (btnp(0)) then
+			if (notes[1]!=nill and notes[1].x>=27 and notes[1].x<=40 and notes[1].s=="⬅️") then
+				del(notes,notes[1])
+				u_degat()
+				sfx(30+combo)
+				combo+=1
+				if (combo>9) combo=0
+			else
+				sfx(40)
+				perdre_ma_vie()
+				combo=0
+				offset=0.08
+
+			end	
+		end
+
+		if (btnp(1)) then
+			if (notes[1]!=nill and notes[1].x>=27 and notes[1].x<=40 and notes[1].s=="➡️") then
+				del(notes,notes[1])
+				sfx(30+combo)
+				u_degat()
+				combo+=1
+				if (combo>9) combo=0
+			else
+				sfx(40)
+				perdre_ma_vie()
+				combo=0
+				offset=0.08
+
+			end
+		end
+
+		if (btnp(5)) then
+			if (notes[1]!=nill and notes[1].x>=27 and notes[1].x<=40 and notes[1].s=="❎") then
+				del(notes,notes[1])
+				sfx(30+combo)
+				u_degat()
+				combo+=1
+				if (combo>9) combo=0
+			else
+				sfx(40)
+				perdre_ma_vie()
+				combo=0
+				offset=0.08
+
+			end
+		end
+
+
+		if (btnp(4)) then
+			if (notes[1]!=nill and notes[1].x>=27 and notes[1].x<=40 and notes[1].s=="🅾️") then
+				del(notes,notes[1])
+				sfx(30+combo)
+				u_degat()
+				combo+=1
+				if (combo>9) combo=0
+			else
+				sfx(40)
+				perdre_ma_vie()
+				combo=0
+				offset=0.08
+
+			end
+		end
+
+
+
+
+
+		for i=1,#notes do
+			if (notes[i]!=nill) then
+				notes[i].x-=0.80
+				if (notes[i].x<20) then
+					add(fini,notes[i])
+					del(notes,notes[i])
+					sfx(40)
+					perdre_ma_vie()
+					offset=0.08
+				end
+			end
+		end
+		for a=1,#fini do
+			if (fini[i]!=nill) and (fini[i].x<-7) then
+				del(fini,notes[i])
+			end
+		end
+	end
+end
+
+--------------------------------------------------------
+--------------------------------------------------------
+--------combat ketchup ---------------------------------
+----------------------------------------------------------
+---------------------------------------------------------
+function draw_combat_k()
+
+
+	if etat=="combat_k" then
+		cls()
+		screen_shake()
+		palt(0,false)
+		rect(0,52,63,62,1)
+		rectfill(1,53,62,61,0)
+		palt()
+		draw_life()
+		draw_k()
+		draw_ma_vie()
+		line(27,53,27,61,11)
+		line(40,53,40,61,11)
+		for i=1,#notes do
+			local n=notes[i]
+			print(n.s,n.x,n.y)
+--			pset(n.x+3,n.y+3,9)
+	
+		end
+
+		for a=1,#fini do
+			local n=fini[i]
+			if n!=nill then
+				print(n.s,n.x,n.y)
+--				pset(n.x+3,n.y+3,9)
+			end
+
+		end
+
+	end
+end
+
+function draw_k()
+
+	if life>25 then
+		spr(151,26,12,2,3)
+	else
+		spr(153,27,12,2,3)
+	end
+end
+function update_k()
+
+
+	if etat=="combat_k" then 
+		rand_pat()
+		faire_c_b()
+		if (btnp(2)) then
+			if (notes[1]!=nill and notes[1].x>=27 and notes[1].x<=40 and notes[1].s=="⬆️") then
+				del(notes,notes[1])
+				u_degat()
+				sfx(30+combo)
+				combo+=1
+				if (combo>9) combo=0
+			else
+				sfx(40)
+				perdre_ma_vie()
+				combo=0
+				offset=0.08
+			end
+		end
+		if (btnp(3)) then
+			if (notes[1]!=nill and notes[1].x>=27 and notes[1].x<=40 and notes[1].s=="⬇️") then
+				del(notes,notes[1])
+				u_degat()
+				sfx(30+combo)
+				combo+=1
+				if (combo>9) combo=0
+			else
+				sfx(40)
+				perdre_ma_vie()
+				combo=0
+				offset=0.08
+
+			end	
+		end
+	
+		if (btnp(0)) then
+			if (notes[1]!=nill and notes[1].x>=27 and notes[1].x<=40 and notes[1].s=="⬅️") then
+				del(notes,notes[1])
+				u_degat()
+				sfx(30+combo)
+				combo+=1
+				if (combo>9) combo=0
+			else
+				sfx(40)
+				perdre_ma_vie()
+				combo=0
+				offset=0.08
+
+			end	
+		end
+
+		if (btnp(1)) then
+			if (notes[1]!=nill and notes[1].x>=27 and notes[1].x<=40 and notes[1].s=="➡️") then
+				del(notes,notes[1])
+				sfx(30+combo)
+				u_degat()
+				combo+=1
+				if (combo>9) combo=0
+			else
+				sfx(40)
+				perdre_ma_vie()
+				combo=0
+				offset=0.08
+
+			end
+		end
+
+		if (btnp(5)) then
+			if (notes[1]!=nill and notes[1].x>=27 and notes[1].x<=40 and notes[1].s=="❎") then
+				del(notes,notes[1])
+				sfx(30+combo)
+				u_degat()
+				combo+=1
+				if (combo>9) combo=0
+			else
+				sfx(40)
+				perdre_ma_vie()
+				combo=0
+				offset=0.08
+
+			end
+		end
+
+
+		if (btnp(4)) then
+			if (notes[1]!=nill and notes[1].x>=27 and notes[1].x<=40 and notes[1].s=="🅾️") then
+				del(notes,notes[1])
+				sfx(30+combo)
+				u_degat()
+				combo+=1
+				if (combo>9) combo=0
+			else
+				sfx(40)
+				perdre_ma_vie()
+				combo=0
+				offset=0.08
+
+			end
+		end
+
+
+
+
+
+		for i=1,#notes do
+			if (notes[i]!=nill) then
+				notes[i].x-=0.80
+				if (notes[i].x<20) then
+					add(fini,notes[i])
+					del(notes,notes[i])
+					sfx(40)
+					perdre_ma_vie()
+					offset=0.08
+				end
+			end
+		end
+		for a=1,#fini do
+			if (fini[i]!=nill) and (fini[i].x<-7) then
+				del(fini,notes[i])
+			end
+		end
+	end
+end
+
+
+
+
+
+----------------------------------------------------------
+----------------------------------------------------------
+----------------------------------------------------------
 
 ------------------------------------
 ------------------------------------
@@ -850,17 +1220,24 @@ function rand_pat()
 	frame+=1
 	if (frame>=temps) then
 		frame=0
-		temps=55
 		if etat=="sensei_combat" then
 			faire_note(touche[flr(rnd(5))])
+			temps=55
 		elseif etat=="combat_saucisse" then
 			faire_note(touche_so[flr(rnd(5.5))])
+			temps=55
+		elseif etat=="combat_m" then
+			faire_note(touche_so[flr(rnd(5.5))])
+			temps=50
+		elseif etat=="combat_k" then
+			faire_note(touche_so[flr(rnd(5.5))])
+			temps=50
 		elseif etat=="combat_boss" then
 			faire_note(touche_boss[flr(rnd(6.5))])
+			temps=45
 		end
 	end
 end
-
 
 function pattern(s)
 	frame+=1
@@ -989,8 +1366,10 @@ end
 function draw_menu()
 	cls()
 	draw_carreau()
-	print("press ❎",15,20,7)
-	print("to play",15,30,7)
+	print("beat the",15,5,7)
+	print("hot-dog-verse",5,15,7)
+	print("press ❎",15,25,7)
+	print("to play",15,35,7)
 	spr(64,0,45,2,2)
 	spr(96,40,45,2,2)
 	
@@ -1164,35 +1543,35 @@ function interact(x,y)
 		newy=26
 		p.flag=0
 		swap_tile(x,y)
-		--music(01)
+		music(01)
 
 	elseif(is_tile(tel,x,y) and p.flag==0) then
 		--combat saucisse
 		etat="combat_saucisse"
-		music(15)
+		music(02)
 		--mapx=0
 		--mapy=0
-		p.flag=4
+		p.flag=2
 		swap_tile(x,y)
 		
 	elseif(is_tile(tel,x,y) and p.flag==2) then
 		--combat moutarde
 		etat="combat_m"
-		music(15)
+		music(02)
 		p.flag=3
 		swap_tile(x,y)
 	
 	elseif(is_tile(tel,x,y) and p.flag==3) then
 		--combat ketchup
 		etat="combat_k"
-		music(15)
+		music(02)
 		p.flag=4
 		swap_tile(x,y)
 	
 	elseif(is_tile(tel,x,y) and p.flag==4) then
 		--combat boss
 		etat="combat_boss"
-		music(15)
+		music(02)
 		p.flag=5
 		swap_tile(x,y)
 
@@ -1230,10 +1609,10 @@ function toggle_tiles()
 		for y=mapy, mapy+8 do
 			if(is_tile(anim1,x,y))then
 				swap_tile(x,y)
-				sfx(2)
+				--sfx(2)
 			elseif(is_tile(anim2,x,y)) then
 				unswap_tile(x,y)
-				sfx(2)			
+				--sfx(2)			
 			end
 		end
 	end
