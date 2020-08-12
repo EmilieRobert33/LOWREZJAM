@@ -8,14 +8,16 @@ function _init()
 	init_combat()
 	init_jeux()
 	init_fin()
+	init_boss()
 end
 
 function _update60()
 
 	if (etat=="menu") update_menu()
-	if (etat=="bug_soso") etat="dialogue_debut_sosoa"
+	--if (etat=="bug_soso") etat="dialogue_debut_sosoa"
 	update_explo_maison()
 	update_combat()
+	update_boss()
 	
 
 end
@@ -25,7 +27,7 @@ function _draw()
 	if (etat=="menu")	draw_menu()
 	draw_combat()
 	draw_explo_maison()
-
+	draw_combat_boss()
 
 end
 ---------------------------------------
@@ -542,6 +544,8 @@ function u_degat()
 			etat="dialogue_fin_sensei"
 		elseif etat=="combat_saucisse" then
 			etat="dialogue_fin_soso"
+		elseif etat=="combat_boss" then
+			etat="explo_hot_dog_city"
 		end
 	end
 end
@@ -637,9 +641,207 @@ function draw_ma_vie()
 	end
 end
 
+-----------------------------------------
+-----------------------------------------
+--fonction pour combat boss -------------
+------------------------------------------
+-----------------------------------------
+
+function draw_c_b()
+	cx=34
+	cy=27
+	for i=1,#c_b do
+		rectfill(cx,cy,c_b[i].x,c_b[i].y,c_b[i].c)
+		rectfill(cx,cy,cx+(cx-c_b[i].x),c_b[i].y,c_b[i].c)
+		rectfill(cx,cy,c_b[i].x,cy+cy-c_b[i].y,c_b[i].c)	
+		rectfill(cx,cy,2*cx-c_b[i].x,2*cy-c_b[i].y,c_b[i].c)
+	end
+
+end
+
+function faire_c_b(x,y)
+	for i=1,#c_b do
+		if (c_b[i]!=nill) then
+			c_b[i].x+=1/5
+			c_b[i].y+=1/5
+			if (c_b[i].x>=37 and c_b[i].f) then
+				c_b[i].f=false
+				add(c_b,{x=32,y=27,c=rnd(15),f=true})
+			elseif (c_b[i].x>65) then
+				del(c_b,c_b[i])
+			end
+		end
+	end
+end
+
+function init_boss()
+	c_b={{x=0,y=0,c=6,f=true}}
+	c_b[1].x=34
+	c_b[1].y=27
+	c_b[1].c=30
+
+	touche_boss={"h","b","d","g","x","c"}
+end
+
+function draw_boss()
+
+	if life>25 then
+		spr(128,26,12,2,3)
+	else
+		spr(176,27,12,2,3)
+	end
+end
+
+function draw_combat_boss()
+
+	if etat=="combat_boss" then
+		cls()
+		screen_shake()
+		draw_c_b()
+		palt(0,false)
+		rect(0,52,63,62,1)
+		rectfill(1,53,62,61,0)
+		palt()
+		draw_life()
+		draw_boss()
+		draw_ma_vie()
+		line(27,53,27,61,11)
+		line(40,53,40,61,11)
+		for i=1,#notes do
+			local n=notes[i]
+			print(n.s,n.x,n.y)
+--			pset(n.x+3,n.y+3,9)	
+		end
+		for a=1,#fini do
+			local n=fini[i]
+			if n!=nill then
+				print(n.s,n.x,n.y)
+--				pset(n.x+3,n.y+3,9)
+			end
+
+		end
+	end
+end
 
 
+function update_boss()
 
+	if etat=="combat_boss" then 
+		rand_pat()
+		faire_c_b()
+		if (btnp(2)) then
+			if (notes[1]!=nill and notes[1].x>=27 and notes[1].x<=40 and notes[1].s=="⬆️") then
+				del(notes,notes[1])
+				u_degat()
+				sfx(30+combo)
+				combo+=1
+				if (combo>9) combo=0
+			else
+				sfx(40)
+				perdre_ma_vie()
+				combo=0
+				offset=0.08
+			end
+		end
+		if (btnp(3)) then
+			if (notes[1]!=nill and notes[1].x>=27 and notes[1].x<=40 and notes[1].s=="⬇️") then
+				del(notes,notes[1])
+				u_degat()
+				sfx(30+combo)
+				combo+=1
+				if (combo>9) combo=0
+			else
+				sfx(40)
+				perdre_ma_vie()
+				combo=0
+				offset=0.08
+
+			end	
+		end
+	
+		if (btnp(0)) then
+			if (notes[1]!=nill and notes[1].x>=27 and notes[1].x<=40 and notes[1].s=="⬅️") then
+				del(notes,notes[1])
+				u_degat()
+				sfx(30+combo)
+				combo+=1
+				if (combo>9) combo=0
+			else
+				sfx(40)
+				perdre_ma_vie()
+				combo=0
+				offset=0.08
+
+			end	
+		end
+
+		if (btnp(1)) then
+			if (notes[1]!=nill and notes[1].x>=27 and notes[1].x<=40 and notes[1].s=="➡️") then
+				del(notes,notes[1])
+				sfx(30+combo)
+				u_degat()
+				combo+=1
+				if (combo>9) combo=0
+			else
+				sfx(40)
+				perdre_ma_vie()
+				combo=0
+				offset=0.08
+
+			end
+		end
+
+		if (btnp(5)) then
+			if (notes[1]!=nill and notes[1].x>=27 and notes[1].x<=40 and notes[1].s=="❎") then
+				del(notes,notes[1])
+				sfx(30+combo)
+				u_degat()
+				combo+=1
+				if (combo>9) combo=0
+			else
+				sfx(40)
+				perdre_ma_vie()
+				combo=0
+				offset=0.08
+
+			end
+		end
+
+		if (btnp(4)) then
+			if (notes[1]!=nill and notes[1].x>=27 and notes[1].x<=40 and notes[1].s=="🅾️") then
+				del(notes,notes[1])
+				sfx(30+combo)
+				u_degat()
+				combo+=1
+				if (combo>9) combo=0
+			else
+				sfx(40)
+				perdre_ma_vie()
+				combo=0
+				offset=0.08
+
+			end
+		end
+
+		for i=1,#notes do
+			if (notes[i]!=nill) then
+				notes[i].x-=0.80
+				if (notes[i].x<20) then
+					add(fini,notes[i])
+					del(notes,notes[i])
+					sfx(40)
+					perdre_ma_vie()
+					offset=0.08
+				end
+			end
+		end
+		for a=1,#fini do
+			if (fini[i]!=nill) and (fini[i].x<-7) then
+				del(fini,notes[i])
+			end
+		end
+	end
+end
 
 ------------------------------------
 ------------------------------------
@@ -651,8 +853,10 @@ function rand_pat()
 		temps=55
 		if etat=="sensei_combat" then
 			faire_note(touche[flr(rnd(5))])
-		else
-			faire_note(touche_so[flr(rnd(6))])
+		elseif etat=="combat_saucisse" then
+			faire_note(touche_so[flr(rnd(5.5))])
+		elseif etat=="combat_boss" then
+			faire_note(touche_boss[flr(rnd(6.5))])
 		end
 	end
 end
@@ -669,7 +873,6 @@ function pattern(s)
 end
 
 function faire_note(a)
-
 	if (a=="h") then
 		local n={x=64,y=55,s="⬆️"}
 		add(notes,n)
@@ -692,7 +895,12 @@ function faire_note(a)
 		add(notes,n)
 	end
 
+	if (a=="c") then
+		local n={x=64,y=55,s="🅾️"}
+		add(notes,n)
+	end
 end
+
 
 function faire_carreau()
 	if (cos(t())==-1) then
@@ -964,7 +1172,7 @@ function interact(x,y)
 		music(15)
 		--mapx=0
 		--mapy=0
-		p.flag=2
+		p.flag=4
 		swap_tile(x,y)
 		
 	elseif(is_tile(tel,x,y) and p.flag==2) then
