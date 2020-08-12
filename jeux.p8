@@ -262,7 +262,7 @@ function update_menu()
 		update_carreau()
 	if (btnp(5)) then
 		etat="explo_maison"
-		music(10)
+		music(01)
 	end
 
 end
@@ -273,6 +273,7 @@ function update_explo_maison()
 		move_player()
 		if (nbr_pas == 3) then
 			etat="dialogue_debut_sensei"
+			music(15)
 		end
 		anim_player()
 	elseif etat=="explo_hot_dog_city" then
@@ -385,6 +386,7 @@ function update_combat()
 		if (cos(2*t())<0 and s_parle==11) s_parle=8
 		if (btnp(0) or btnp(1) or btnp(2) or btnp(3) or btnp(4) or btnp(5)) then
 			etat="explo_maison"
+			music(01)
 			nbr_pas=50
 			life=51
 			ma_vie=4
@@ -407,6 +409,7 @@ function update_combat()
 		if (cos(2*t())<0 and so_parle==110) so_parle=108
 		if (btnp(0) or btnp(1) or btnp(2) or btnp(3) or btnp(4) or btnp(5)) then
 			etat="explo_hot_dog_city"
+			music(01)
 			life=51
 			ma_vie=4
 		end
@@ -875,8 +878,8 @@ end
 
 function draw_player()
 	spr(p.sprite,p.x*8,p.y*8,2,2)
-	print(p.flag,p.x*8,p.y*8,8)
-	print(etat,p.x*8,p.y*8,8)
+	--print(p.flag,p.x*8,p.y*8,8)
+	--print(etat,p.x*8,p.y*8,8)
 end
 
 function draw_sensei()
@@ -929,10 +932,12 @@ function interact(x,y)
 		newx=59
 		newy=26
 		p.flag=0
+		--music(01)
 
 	elseif(is_tile(tel,x,y) and p.flag==0) then
 		--etat="dialogue_debut_sosoa"
 		etat="combat_saucisse"
+		music(15)
 		--mapx=0
 		--mapy=0
 		p.flag=2
@@ -1211,6 +1216,6 @@ __sfx__
 001000002f55001500142001200002000160000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 001000000865000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __music__
-00 01424344
-00 02424344
+02 01424344
+03 02424344
 
