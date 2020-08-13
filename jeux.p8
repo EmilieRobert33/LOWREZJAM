@@ -7,21 +7,25 @@ function _init()
 	init_explo_maison()
 	init_combat()
 	init_jeux()
-	init_fin()
+	--init_fin()
 	init_boss()
+	--init_fin()
+	
 end
 
 function _update60()
-
+	
 	if (etat=="menu") update_menu()
 	--if (etat=="bug_soso") etat="dialogue_debut_sosoa"
 	update_explo_maison()
 	update_dialogue_m_k()
+	update_fin()
 	update_combat()
 	update_boss()
 	update_m()
 	update_k()
 	update_dialogue_m_k()
+	--update_fin()
 
 end
 
@@ -29,6 +33,7 @@ function _draw()
 	
 	if (etat=="menu")	draw_menu()
 	draw_dialogue_m_k()
+	draw_fin()
 	draw_combat()
 	draw_explo_maison()
 	draw_combat_boss()
@@ -64,7 +69,10 @@ function update_dialogue_m_k()
 		so_parle=173
 		if (etat=="dialogue_fin_k") so_parle=167
 		if temps<=0 then
-			if (btnp(5) or btnp(4) or btnp(3) or btnp(2) or btnp(1) or btnp(0)) then
+			if ((etat=="dialogue_fin_boss")and (btnp(5) or btnp(4) or btnp(3) or btnp(2) or btnp(1) or btnp(0))) then 
+					etat="fin"
+					music(00)
+			elseif ((btnp(5) or btnp(4) or btnp(3) or btnp(2) or btnp(1) or btnp(0)) and (etat!="dialogue_fin_boss")) then
 				etat="explo_hot_dog_city"
 				music(01)
 				life=51
@@ -142,7 +150,9 @@ function draw_explo_maison()
 		cls()
 		draw_map()	
 		if (p.flag == 5) then
-			draw_portail(119,12)
+			--draw_fin()
+			--draw_portail(119,12)
+			--etat="fin"
 		end
 		draw_player()
 		--quand le player chnage de flag la saucisse est battue
@@ -293,10 +303,12 @@ function init_menu()
 	poke(0x5f2c,3) -- cette ligne permet de mettre pico-8 en mode 64x64
 	etat="menu" --etat initiale du jeux ce sera menu par default
 	music(0)
+	gene=65
 end
 
 function init_fin()
-
+	music(25)
+	etat="fin"
 end
 
 function init_combat()
@@ -357,7 +369,7 @@ function update_explo_maison()
 end
 
 function update_fin()
-
+	if (etat=="fin") gene-=1/10
 
 end
 
@@ -460,7 +472,8 @@ function update_combat()
 	elseif etat=="dialogue_fin_sensei" then
 		if (cos(2*t())>0 and s_parle==8) s_parle=11		
 		if (cos(2*t())<0 and s_parle==11) s_parle=8
-		if (btnp(0) or btnp(1) or btnp(2) or btnp(3) or btnp(4) or btnp(5)) then
+		temps-=1
+		if ((btnp(0) or btnp(1) or btnp(2) or btnp(3) or btnp(4) or btnp(5))and temps<=0) then
 			etat="explo_maison"
 			music(01)
 			nbr_pas=50
@@ -483,7 +496,8 @@ function update_combat()
 	elseif etat=="dialogue_fin_soso" then
 		if (cos(2*t())>0 and so_parle==108) so_parle=110		
 		if (cos(2*t())<0 and so_parle==110) so_parle=108
-		if (btnp(0) or btnp(1) or btnp(2) or btnp(3) or btnp(4) or btnp(5)) then
+		temps-=1
+		if ((btnp(0) or btnp(1) or btnp(2) or btnp(3) or btnp(4) or btnp(5))and temps<=0) then
 			etat="explo_hot_dog_city"
 			music(01)
 			life=51
@@ -1437,7 +1451,18 @@ function draw_menu()
 end
 
 function draw_fin()
-
+	if etat=="fin" then
+		cls()
+		print("thank you",15,gene,7)
+		print("for playing",11,gene+10,7)
+		print("game made by",10,gene+20,7)
+		print("gascoun gaming",7,gene+30,7)
+		print("art and music:",7,gene+40,7)
+		print("kaioken",17+4,gene+50,7)
+		print("code :",19+4,gene+60,7)
+		print("ph0enix",17+4,gene+70,7)
+		print("naw4k",21+4,gene+80,7)
+	end
 end
 -------------------------------------
 --c'est un peu le bordel fonction support pour explo
