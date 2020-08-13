@@ -16,21 +16,25 @@ function _update60()
 	if (etat=="menu") update_menu()
 	--if (etat=="bug_soso") etat="dialogue_debut_sosoa"
 	update_explo_maison()
+	update_dialogue_m_k()
 	update_combat()
 	update_boss()
 	update_m()
 	update_k()
+	update_dialogue_m_k()
 
 end
 
 function _draw()
 	
 	if (etat=="menu")	draw_menu()
+	draw_dialogue_m_k()
 	draw_combat()
 	draw_explo_maison()
 	draw_combat_boss()
 	draw_combat_m()
 	draw_combat_k()
+	
 
 end
 ---------------------------------------
@@ -54,6 +58,55 @@ end
 ---------------------------------------
 -- diverse fonction pour update_jeux()
 ---------------------------------------
+function update_dialogue_m_k()
+	if (etat=="dialogue_fin_m" or etat=="dialogue_fin_k" or etat=="dialogue_fin_boss")  then		
+		so_parle=173
+		if (etat=="dialogue_fin_k") so_parle=167
+		if (btnp(5)) then
+			etat="explo_hot_dog_city"
+			music(01)
+			life=51
+			ma_vie=4
+		end
+	end
+
+end
+
+function draw_dialogue_m_k()
+
+	if etat=="dialogue_fin_m" then
+		cls()
+		rect(0,0,17,18,7)
+		spr(so_parle,1+4,2,2.1,2)
+		print("haaaaaaaa ",25,0,7)
+		print("my best friend ",25,10,7)
+		print("friend ",0,20,7)
+		print("ketchup",0,30,8)
+		print("will eat you !!",0,40,7)
+		--print("will b-eat you!",0,50,7)
+	elseif etat=="dialogue_fin_k" then
+		cls()
+		rect(0,0,17,18,7)
+		spr(so_parle,1+4,2,2.1,2)
+		print("my king is ",25,0,7)
+		print("stronger",25,10,7)
+		print("than me.",0,20,7)
+		print("i am not affraid",0,30,7)
+		print("you will perish!!",0,40,7)
+		--print("will b-eat you!",0,50,7)
+	elseif etat=="dialogue_fin_boss" then
+		cls()
+		rect(0,0,17,18,7)
+		spr(163,1,2,2,2)
+		print("i curse",25,0,7)
+		print("your",25,10,7)
+		print("universe !!!",0,20,7)
+		print("my friend",0,30,7)
+		print("bubble-master ",0,40,7)
+		print("will destroy ",0,50,7)
+		print("your home !!",0,59,7)
+	end
+end
 
 
 ---------------------------------------
@@ -557,13 +610,13 @@ function u_degat()
 			etat="dialogue_fin_soso"
 			music(01)
 		elseif etat=="combat_m" then
-			etat="explo_hot_dog_city"
+			etat="dialogue_fin_m"
 			music(01)
 		elseif etat=="combat_k" then
-			etat="explo_hot_dog_city"
+			etat="dialogue_fin_k"
 			music(01)
 		elseif etat=="combat_boss" then
-			etat="explo_hot_dog_city"
+			etat="dialogue_fin_boss"
 			music(01)
 		end
 	end
