@@ -59,14 +59,18 @@ end
 -- diverse fonction pour update_jeux()
 ---------------------------------------
 function update_dialogue_m_k()
-	if (etat=="dialogue_fin_m" or etat=="dialogue_fin_k" or etat=="dialogue_fin_boss")  then		
+	if (etat=="dialogue_fin_m" or etat=="dialogue_fin_k" or etat=="dialogue_fin_boss") then	
+		temps-=1
 		so_parle=173
 		if (etat=="dialogue_fin_k") so_parle=167
-		if (btnp(5)) then
-			etat="explo_hot_dog_city"
-			music(01)
-			life=51
-			ma_vie=4
+		if temps<=0 then
+			if (btnp(5) or btnp(4) or btnp(3) or btnp(2) or btnp(1) or btnp(0)) then
+				etat="explo_hot_dog_city"
+				music(01)
+				life=51
+				ma_vie=4
+				temps=60
+			end
 		end
 	end
 
@@ -79,7 +83,7 @@ function draw_dialogue_m_k()
 		rect(0,0,17,18,7)
 		spr(so_parle,1+4,2,2.1,2)
 		print("haaaaaaaa ",25,0,7)
-		print("my best friend ",25,10,7)
+		print("my best  ",25,10,7)
 		print("friend ",0,20,7)
 		print("ketchup",0,30,8)
 		print("will eat you !!",0,40,7)
@@ -201,10 +205,10 @@ function draw_combat()
 		spr(s_parle,0,0,2.5,2.5)
 		print("let's go",25,0,7)
 		print("training!",25,10,7)
-		print("use arrow key",0,20,7)
-		print("and your",0,30,7)
-		print("reflexes to",0,40,7)
-		print("beat me",0,50,7)
+		print("use the correct ",0,20,7)
+		print("key ⬆️⬇️➡️⬅️❎🅾️",0,30,7)
+		print("in the green",0,40,7)
+		print("zone to beat me",0,50,7)
 		print("good luck son!",0,59,7)
 	
 
@@ -603,6 +607,7 @@ function u_degat()
 	if (life<=0) then
 		life=51
 		ma_vie=4
+		temps=75
 		if etat=="sensei_combat" then
 			etat="dialogue_fin_sensei"
 			music(01)
@@ -1546,7 +1551,7 @@ function draw_boss_explo()
 end
 
 function draw_m_explo()
-	spr(anim_moutarde_explo(74),84*8,26*8,2,2)
+	spr(anim_moutarde_explo(74),84*8,25*8,2,2)
 end
 
 function draw_k_explo()
